@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { Mail, MapPin, Instagram, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { ActiveTab } from '../types';
 import { WingsLogo } from './WingsLogo';
 
@@ -125,13 +125,6 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenContact, onO
                 <Mail className="w-4 h-4 text-purple-400 shrink-0" />
                 <a href="mailto:retail@wings-marketing.com" className="hover:text-purple-300 transition-colors">
                   retail@wings-marketing.com
-                </a>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-purple-400 shrink-0" />
-                <a href="tel:+919230628052" className="hover:text-purple-300 transition-colors font-mono">
-                  +91 92306 28052
                 </a>
               </div>
 

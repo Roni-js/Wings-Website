@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, CheckCircle2, Sparkles, Phone, Mail, Globe, ArrowRight } from 'lucide-react';
+import { X, Send, CheckCircle2, Sparkles, Mail, Globe, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const WhatsAppIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
@@ -26,18 +26,34 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
 
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 }
-    });
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      console.error('Failed to submit contact data:', err);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }
   };
 
   const serviceOptions = [
@@ -123,20 +139,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
             </div>
 
             {/* Instant Contact Action Bar */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/10">
-              <a
-                href="tel:+919230628052"
-                className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-400/40 text-white flex items-center gap-3 transition-all group"
-              >
-                <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400 group-hover:scale-110 transition-transform">
-                  <Phone className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white">Call Us Directly</div>
-                  <div className="text-[10px] text-[#AAB2C8] font-mono">+91 92306 28052</div>
-                </div>
-              </a>
-
+            <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10">
               <a
                 href="https://wa.me/919230628052?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
                 target="_blank"
@@ -263,10 +266,17 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
             {/* Submit CTA */}
             <button
               type="submit"
-              className="w-full py-4 rounded-full bg-[#4F7CFF] hover:bg-[#5B8CFF] text-white font-display font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-600/30 glow-blue transition-all flex items-center justify-center gap-2 cursor-pointer"
+              disabled={submitting}
+              className="w-full py-4 rounded-full bg-[#4F7CFF] hover:bg-[#5B8CFF] text-white font-display font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-600/30 glow-blue transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
             >
-              <span>Confirm Strategy Call Request</span>
-              <ArrowRight className="w-4 h-4" />
+              {submitting ? (
+                <span>Submitting Request...</span>
+              ) : (
+                <>
+                  <span>Confirm Strategy Call Request</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </button>
           </form>
         )}

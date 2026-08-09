@@ -33,7 +33,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ type, onClose }) => {
               {isPrivacy ? 'Privacy Policy' : 'Terms & Conditions'}
             </h3>
             <span className="text-xs text-[#AAB2C8] font-mono">
-              WINGS Marketing® • Effective 2026
+              WINGS Marketing and Finance • Effective 2026
             </span>
           </div>
         </div>
@@ -42,31 +42,49 @@ export const LegalModal: React.FC<LegalModalProps> = ({ type, onClose }) => {
           {isPrivacy ? (
             <>
               <p>
-                <strong className="text-white">1. Data Collection & Usage:</strong> WINGS Marketing respects your brand privacy. Information collected through our contact forms (Name, Email, Phone, Website) is strictly used for performance consultations and ROI strategy audits.
+                <strong className="text-white">1. Data Collection & Usage:</strong> WINGS Marketing and Finance collects information such as Name, Email, Phone Number, Website, and business details through our website and contact forms. This information is used for consultations, service delivery, communication, and marketing strategy purposes.
               </p>
               <p>
-                <strong className="text-white">2. First-Party Analytics:</strong> We utilize first-party tracking pixels and server-side Conversion API (CAPI) protocols to optimize media campaigns on behalf of our client partners. We never sell or share client data with unauthorized third parties.
+                <strong className="text-white">2. Data Privacy & Third-Party Services:</strong> We may use analytics tools, tracking pixels, server-side Conversion API (CAPI), and other third-party platforms to optimize campaigns. We do not sell client data to unauthorized third parties.
               </p>
               <p>
-                <strong className="text-white">3. Confidentiality:</strong> All store metrics, campaign performance figures, and proprietary sales data shared during partnerships remain strictly confidential under non-disclosure standards.
+                <strong className="text-white">3. Confidentiality:</strong> Store metrics, campaign performance, business information, and proprietary sales data shared with WINGS Marketing and Finance are treated as confidential and used only for providing agreed services.
               </p>
               <p>
-                <strong className="text-white">4. Direct Inquiries:</strong> For any privacy inquiries, reach us at retail@wings-marketing.com or +91 92306 28052 (Kolkata, WB, India).
+                <strong className="text-white">4. Data Security:</strong> We take reasonable measures to protect collected information. However, no online system can guarantee absolute security.
+              </p>
+              <p>
+                <strong className="text-white">5. Policy Updates:</strong> WINGS Marketing and Finance may update this Privacy Policy when required. Continued use of our services indicates acceptance of the updated policy.
+              </p>
+              <p>
+                <strong className="text-white">By using our website or services, you agree to this Privacy Policy.</strong>
               </p>
             </>
           ) : (
             <>
               <p>
-                <strong className="text-white">1. Performance Assurance:</strong> Projections made on the WINGS Marketing platform (including the ROI estimator) are based on historical client portfolio averages and campaign benchmarks. Actual store performance varies based on product quality, inventory availability, and market demand.
+                <strong className="text-white">1. Advertising & Third-Party Costs:</strong> Ad spend, platform fees, software, hosting, and other third-party costs are non-refundable. WINGS Marketing and Finance is not responsible for third-party errors, account restrictions, policy changes, or platform issues.
               </p>
               <p>
-                <strong className="text-white">2. Intellectual Property:</strong> All brand assets, campaign creative frameworks, and custom software architectures developed by WINGS Marketing® are protected under trademark and copyright regulations.
+                <strong className="text-white">2. Client Responsibility:</strong> Clients are responsible for product quality, inventory, pricing, fulfilment, customer service, and providing accurate information and timely approvals.
               </p>
               <p>
-                <strong className="text-white">3. Partnership Agreements:</strong> Official client engagements are governed by bespoke Master Service Agreements (MSA) outlining deliverables, media spend ownership, and revenue share terms.
+                <strong className="text-white">3. Limitation of Liability:</strong> WINGS Marketing and Finance shall not be liable for business losses, loss of revenue, profits, advertising losses, or results beyond our direct control.
               </p>
               <p>
-                <strong className="text-white">4. Jurisdiction:</strong> WINGS Marketing operates out of Kolkata, West Bengal, India. All legal terms are interpreted in accordance with applicable Indian trade regulations.
+                <strong className="text-white">4. Intellectual Property:</strong> WINGS Marketing and Finance retains ownership of its proprietary strategies, frameworks, systems, software architectures, and methodologies unless otherwise agreed in writing.
+              </p>
+              <p>
+                <strong className="text-white">5. Jurisdiction:</strong> These terms are governed by applicable Indian laws. WINGS Marketing and Finance operates from Kolkata, West Bengal, India.
+              </p>
+              <p>
+                <strong className="text-white">6. No Sales Guarantee:</strong> WINGS Marketing and Finance does not guarantee sales, revenue, profit, ROAS, leads, or any specific business results. Performance may vary based on product, pricing, market demand, competition, inventory, and other external factors.
+              </p>
+              <p>
+                <strong className="text-white">7. No Refund Policy:</strong> All payments made for WINGS Marketing and Finance services are non-refundable once work, strategy, setup, or service has commenced. Refunds will not be provided due to low sales, poor campaign performance, or changes in business plans.
+              </p>
+              <p>
+                <strong className="text-white">By making a payment or using our services, you agree to these Terms & Conditions.</strong>
               </p>
             </>
           )}

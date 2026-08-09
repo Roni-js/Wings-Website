@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+google-credentials.json
+credentials.json
+leads.json

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Target, RefreshCw, MessageSquare, ArrowRight, Zap, CheckCircle2, Layers } from 'lucide-react';
+import { BarChart3, Target, RefreshCw, MessageSquare, ArrowRight, Zap, CheckCircle2, TrendingUp, Layers } from 'lucide-react';
 
 export const WhyWingsSection: React.FC = () => {
   const points = [

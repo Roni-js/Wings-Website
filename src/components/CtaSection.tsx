@@ -56,11 +56,6 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact, onExplore
           </button>
         </div>
 
-        {/* Contact direct line */}
-        <div className="pt-8 text-xs text-neutral-400 font-mono">
-          Direct Line: <a href="tel:+919230628052" className="text-purple-300 hover:underline">+91 92306 28052</a> • <a href="mailto:retail@wings-marketing.com" className="text-purple-300 hover:underline">retail@wings-marketing.com</a>
-        </div>
-
       </div>
     </section>
   );
