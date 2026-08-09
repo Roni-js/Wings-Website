@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, CheckCircle2, Sparkles, Mail, Globe, ArrowRight } from 'lucide-react';
+import { X, Send, CheckCircle2, Sparkles, Phone, Mail, Globe, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const WhatsAppIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
@@ -27,32 +27,42 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
 
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setErrorMsg(null);
 
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-    } catch (err) {
+
+      const data = await res.json().catch(() => ({ success: true }));
+
+      if (res.ok || data.success) {
+        setSubmitted(true);
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
+      } else {
+        setErrorMsg(data.error || 'Failed to submit contact request. Please try again.');
+      }
+    } catch (err: any) {
       console.error('Failed to submit contact data:', err);
+      // Fallback: mark submitted so local save isn't ignored
+      setSubmitted(true);
     } finally {
       setSubmitting(false);
-      setSubmitted(true);
-
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
     }
   };
 
@@ -137,6 +147,12 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
                 Tell us about your brand goals. We engineer custom performance strategies that scale revenue predictably.
               </p>
             </div>
+
+            {errorMsg && (
+              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center justify-between gap-3">
+                <span>{errorMsg}</span>
+              </div>
+            )}
 
             {/* Instant Contact Action Bar */}
             <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10">

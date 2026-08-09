@@ -86,7 +86,7 @@ export const WhyWingsSection: React.FC = () => {
                   <Layers className="w-5 h-5 text-[#5B8CFF]" />
                   <h3 className="font-display font-bold text-lg text-white">Connected Growth Engine Flow</h3>
                 </div>
-                <span className="text-xs font-mono text-[#5B8CFF]">WINGS® Architecture</span>
+                <span className="text-xs font-mono text-[#5B8CFF]">WINGS Architecture</span>
               </div>
 
               {/* Connected Flow Steps */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, MapPin, Instagram, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { ActiveTab } from '../types';
 import { WingsLogo } from './WingsLogo';
 
@@ -162,7 +162,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenContact, onO
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-center relative gap-4 text-xs text-neutral-400 text-center">
           <div className="sm:mx-auto font-medium">
-            © 2026 WINGS Marketing®. All Rights Reserved.
+            © 2026 WINGS Marketing. All Rights Reserved.
           </div>
 
           <button

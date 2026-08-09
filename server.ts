@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -6,9 +7,54 @@ import { google } from 'googleapis';
 
 const PORT = 3000;
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID || '1s9oMgn_zTWryP0n34z-FMKHg-dktQR6Nm-ZSO97AMVY';
-const WEBHOOK_URL = process.env.GOOGLE_SHEETS_WEBHOOK_URL || '';
 
 const LEADS_FILE = path.join(process.cwd(), 'leads.json');
+
+function sanitizeInput(val: unknown, maxLength = 300): string {
+  if (typeof val !== 'string') return '';
+  return val
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .trim()
+    .slice(0, maxLength);
+}
+
+// Simple IP rate limiter to protect public endpoints from spam (max 15 requests/min per IP)
+const ipRateLimits = new Map<string, { count: number; resetTime: number }>();
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const clientIp = ip || 'unknown';
+  const record = ipRateLimits.get(clientIp) || { count: 0, resetTime: now + 60000 };
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + 60000;
+  } else {
+    record.count += 1;
+  }
+  ipRateLimits.set(clientIp, record);
+  return record.count > 15;
+}
+
+// In-memory duplicate prevention map (email + phone -> timestamp)
+const recentSubmissions = new Map<string, number>();
+
+function isDuplicateSubmission(email: string, phone: string): boolean {
+  if (!email && !phone) return false;
+  const key = `${email.toLowerCase().trim()}:${phone.replace(/\D/g, '')}`;
+  const now = Date.now();
+  const lastTime = recentSubmissions.get(key);
+  if (lastTime && now - lastTime < 30000) { // 30 seconds duplicate window
+    return true;
+  }
+  recentSubmissions.set(key, now);
+  // Cleanup old entries
+  if (recentSubmissions.size > 500) {
+    for (const [k, time] of recentSubmissions.entries()) {
+      if (now - time > 60000) recentSubmissions.delete(k);
+    }
+  }
+  return false;
+}
 
 // Ensure leads.json exists
 function getStoredLeads(): any[] {
@@ -37,25 +83,33 @@ function saveLeadLocally(leadData: any) {
 const CREDENTIALS_PATH = path.join(process.cwd(), 'google-credentials.json');
 
 function getGoogleAuth() {
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+  const jsonEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (jsonEnv) {
     try {
-      const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+      const rawJson = jsonEnv.trim();
+      const credentials = JSON.parse(rawJson);
+      if (credentials.private_key && typeof credentials.private_key === 'string') {
+        credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+      }
+      console.log(`[Google Auth] Initializing Google Auth from GOOGLE_SERVICE_ACCOUNT_JSON (client_email: ${credentials.client_email}, project_id: ${credentials.project_id})`);
       return new google.auth.GoogleAuth({
         credentials,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
-    } catch (e) {
-      console.error('Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON:', e);
+    } catch (e: any) {
+      console.error('[Google Auth] Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON environment variable:', e?.message || e);
     }
   }
 
   if (fs.existsSync(CREDENTIALS_PATH)) {
+    console.log(`[Google Auth] Initializing Google Auth from local credentials file (${CREDENTIALS_PATH})`);
     return new google.auth.GoogleAuth({
       keyFile: CREDENTIALS_PATH,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
   }
 
+  console.warn('[Google Auth] No GOOGLE_SERVICE_ACCOUNT_JSON env or google-credentials.json file found. Falling back to default Google Auth.');
   return new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
@@ -121,30 +175,62 @@ async function appendToGoogleSheet(values: (string | number)[][]) {
     console.log('Successfully appended row to Google Sheet');
     return { success: true, data: response.data };
   } catch (error: any) {
-    console.error('Error appending row to Google Sheet:', error?.message || error);
-    throw error;
+    const errorMsg = error?.message || String(error);
+    const isApiNotEnabled = errorMsg.includes('has not been used in project') || errorMsg.includes('disabled');
+    if (isApiNotEnabled) {
+      console.warn('[Google Sheets Sync] Google Sheets API is disabled in GCP Cloud Console. Lead saved locally in leads.json.');
+    } else {
+      console.warn('[Google Sheets Sync] Could not sync row directly to Google Sheets:', errorMsg);
+    }
+    return {
+      success: false,
+      error: errorMsg,
+    };
   }
 }
 
 async function startServer() {
   const app = express();
-  app.use(express.json());
+  app.use(express.json({ limit: '50kb' }));
 
   // API Route: Book Your Free Strategy Call Submission
   app.post('/api/strategy-call', async (req, res) => {
     try {
-      const {
-        fullName = '',
-        email = '',
-        phone = '',
-        brandName = '',
-        websiteUrl = '',
-        monthlySpend = '',
-        service = '',
-        preferredDate = '',
-        preferredTime = '',
-        notes = '',
-      } = req.body || {};
+      if (isRateLimited(req.ip || '')) {
+        return res.status(429).json({
+          success: false,
+          error: 'Too many requests. Please wait a minute before trying again.',
+        });
+      }
+
+      const rawBody = req.body || {};
+      const fullName = sanitizeInput(rawBody.fullName, 100);
+      const email = sanitizeInput(rawBody.email, 150);
+      const phone = sanitizeInput(rawBody.phone, 30);
+      const brandName = sanitizeInput(rawBody.brandName, 100);
+      const websiteUrl = sanitizeInput(rawBody.websiteUrl, 200);
+      const monthlySpend = sanitizeInput(rawBody.monthlySpend, 50);
+      const service = sanitizeInput(rawBody.service, 100);
+      const preferredDate = sanitizeInput(rawBody.preferredDate, 30);
+      const preferredTime = sanitizeInput(rawBody.preferredTime, 50);
+      const notes = sanitizeInput(rawBody.notes, 500);
+
+      // Server-side validation
+      if (!fullName || !email || !phone) {
+        return res.status(400).json({
+          success: false,
+          error: 'Please fill in all required fields: Full Name, Email, and Phone Number.',
+        });
+      }
+
+      // Check for rapid duplicate submission
+      if (isDuplicateSubmission(email, phone)) {
+        return res.status(200).json({
+          success: true,
+          message: 'We have already received your request! A strategist will reach out to you shortly.',
+          duplicate: true,
+        });
+      }
 
       const timestamp = new Date().toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
@@ -170,7 +256,7 @@ async function startServer() {
         notes,
       };
 
-      // 1. Always save lead locally first
+      // 1. Always save lead locally
       saveLeadLocally(leadRecord);
 
       // 2. Format row for Google Sheets
@@ -196,15 +282,12 @@ async function startServer() {
         message: 'Strategy call request recorded successfully!',
         leadId,
         sheetSynced: sheetResult.success,
-        sheetNote: sheetResult.success
-          ? 'Row added to Google Sheet'
-          : 'Saved locally; Google Sheets API needs to be enabled in Cloud Console',
       });
     } catch (error: any) {
-      console.error('Failed to submit strategy call lead:', error);
+      console.error('Failed to submit strategy call lead:', error?.message || error);
       res.status(500).json({
         success: false,
-        error: error?.message || 'Failed to record lead.',
+        error: 'Unable to process your request at this time. Please try again.',
       });
     }
   });
@@ -212,15 +295,41 @@ async function startServer() {
   // API Route: General Contact Modal Submission
   app.post('/api/contact', async (req, res) => {
     try {
-      const {
-        name = '',
-        email = '',
-        phone = '',
-        website = '',
-        services = [],
-        budget = '',
-        message = '',
-      } = req.body || {};
+      if (isRateLimited(req.ip || '')) {
+        return res.status(429).json({
+          success: false,
+          error: 'Too many requests. Please wait a minute before trying again.',
+        });
+      }
+
+      const rawBody = req.body || {};
+      const name = sanitizeInput(rawBody.name, 100);
+      const email = sanitizeInput(rawBody.email, 150);
+      const phone = sanitizeInput(rawBody.phone, 30);
+      const website = sanitizeInput(rawBody.website, 200);
+      const budget = sanitizeInput(rawBody.budget, 50);
+      const message = sanitizeInput(rawBody.message, 500);
+
+      const rawServices = Array.isArray(rawBody.services) ? rawBody.services : [rawBody.services];
+      const sanitizedServices = rawServices.map((s: any) => sanitizeInput(s, 50)).filter(Boolean);
+      const servicesString = sanitizedServices.join(', ');
+
+      // Server-side validation
+      if (!name || !email || !phone) {
+        return res.status(400).json({
+          success: false,
+          error: 'Please fill in all required fields: Name, Email, and Phone Number.',
+        });
+      }
+
+      // Check for rapid duplicate submission
+      if (isDuplicateSubmission(email, phone)) {
+        return res.status(200).json({
+          success: true,
+          message: 'We have already received your message! Our team will get back to you shortly.',
+          duplicate: true,
+        });
+      }
 
       const timestamp = new Date().toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
@@ -229,7 +338,6 @@ async function startServer() {
       });
 
       const leadId = `CONTACT-${Date.now()}`;
-      const servicesString = Array.isArray(services) ? services.join(', ') : String(services);
 
       const leadRecord = {
         id: leadId,
@@ -272,10 +380,10 @@ async function startServer() {
         sheetSynced: sheetResult.success,
       });
     } catch (error: any) {
-      console.error('Failed to submit contact lead:', error);
+      console.error('Failed to submit contact lead:', error?.message || error);
       res.status(500).json({
         success: false,
-        error: error?.message || 'Failed to record contact lead.',
+        error: 'Unable to process your request at this time. Please try again.',
       });
     }
   });

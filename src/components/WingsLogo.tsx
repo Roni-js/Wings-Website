@@ -17,10 +17,10 @@ export const WingsLogo: React.FC<WingsLogoProps> = ({
   layout = 'horizontal'
 }) => {
   const iconDimensions = {
-    sm: 'w-7 h-7',
-    md: 'w-10 h-10',
-    lg: 'w-14 h-14',
-    xl: 'w-24 h-24'
+    sm: 'w-10 h-10',
+    md: 'w-14 h-14',
+    lg: 'w-20 h-20',
+    xl: 'w-28 h-28'
   };
 
   const titleSizes = {

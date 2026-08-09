@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowRight, Mail, MapPin } from 'lucide-react';
+import { Menu, X, ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
 import { ActiveTab } from '../types';
 import { WingsLogo } from './WingsLogo';
 
@@ -153,6 +153,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#5B8CFF]" />
                 <span>retail@wings-marketing.com</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-[#5B8CFF]" />
+                <span>+91 92306 28052</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#5B8CFF]" />

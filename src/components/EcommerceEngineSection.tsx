@@ -78,6 +78,42 @@ export const EcommerceEngineSection: React.FC<EcommerceEngineSectionProps> = ({ 
             ))}
           </div>
 
+          {/* Animated Performance Chart Graphic */}
+          <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
+            <div className="flex items-center justify-between text-xs text-[#AAB2C8]">
+              <span className="font-bold text-white">Multi-Channel Attribution & Campaign Scale Curve</span>
+              <span className="font-mono text-[#5B8CFF]">Real-Time Data Feed</span>
+            </div>
+
+            <div className="h-36 w-full relative flex items-end">
+              <svg className="w-full h-full overflow-visible" viewBox="0 0 500 100">
+                <defs>
+                  <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4F7CFF" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 500 5 L 500 100 L 0 100 Z"
+                  fill="url(#blueGradient)"
+                />
+                <path
+                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 500 5"
+                  fill="none"
+                  stroke="#4F7CFF"
+                  strokeWidth="3"
+                />
+                <circle cx="180" cy="50" r="4" fill="#4F7CFF" />
+                <circle cx="350" cy="25" r="4" fill="#8B5CF6" />
+                <circle cx="500" cy="5" r="5" fill="#6EE7B7" className="animate-ping" />
+              </svg>
+            </div>
+
+            <div className="text-center text-[11px] text-[#AAB2C8] italic pt-2">
+              Results vary depending on product, market, offer, budget, customer behavior, and other factors.
+            </div>
+          </div>
+
           {/* Growth Flow Nodes */}
           <div className="pt-6 border-t border-white/10 space-y-6">
             <div className="text-xs font-bold uppercase tracking-widest text-[#5B8CFF]">

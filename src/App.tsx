@@ -23,7 +23,7 @@ import { ServiceDetailDrawer } from './components/ServiceDetailDrawer';
 import { LegalModal } from './components/LegalModal';
 import { StrategyCallPage } from './components/StrategyCallPage';
 import { CaseStudyPage } from './components/CaseStudyPage';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Phone } from 'lucide-react';
 
 const WhatsAppIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -168,7 +168,7 @@ export default function App() {
       {/* Sticky Mobile & Tablet Quick CTA Bar */}
       <div className="lg:hidden fixed bottom-3 left-3 sm:left-6 right-3 sm:right-6 z-40 bg-[#0A1024]/95 backdrop-blur-xl border border-[#4F7CFF]/40 p-2.5 sm:p-3 rounded-2xl shadow-2xl flex items-center justify-between gap-2 sm:gap-3 glow-blue">
         <div className="hidden sm:flex flex-col pl-1">
-          <span className="text-[10px] text-[#5B8CFF] font-bold uppercase tracking-wider">WINGS Marketing®</span>
+          <span className="text-[10px] text-[#5B8CFF] font-bold uppercase tracking-wider">WINGS Marketing</span>
           <span className="text-xs text-white font-bold">Scale Your D2C Brand</span>
         </div>
 
