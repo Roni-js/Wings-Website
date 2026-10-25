@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { SocialProofSection } from './components/SocialProofSection';
 import { ResultsSection } from './components/ResultsSection';
+import { PerformanceProofSection } from './components/PerformanceProofSection';
 import { ServicesSection } from './components/ServicesSection';
 import { WhyWingsSection } from './components/WhyWingsSection';
 import { ProcessSection } from './components/ProcessSection';
@@ -12,16 +13,17 @@ import { CalculatorSection } from './components/CalculatorSection';
 import { CaseStudiesSection } from './components/CaseStudiesSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { CompanyStorySection } from './components/CompanyStorySection';
-import { DailyhuntSection } from './components/DailyhuntSection';
+import { TeamGallerySection } from './components/TeamGallerySection';
+import { ArticlesSection } from './components/ArticlesSection';
 import { PricingSection } from './components/PricingSection';
 import { FaqSection } from './components/FaqSection';
 import { FinalCtaSection } from './components/FinalCtaSection';
 import { Footer } from './components/Footer';
 import { CursorSpotlight } from './components/CursorSpotlight';
 import { ContactModal } from './components/ContactModal';
+import { StrategyCallModal } from './components/StrategyCallModal';
 import { ServiceDetailDrawer } from './components/ServiceDetailDrawer';
 import { LegalModal } from './components/LegalModal';
-import { StrategyCallPage } from './components/StrategyCallPage';
 import { CaseStudyPage } from './components/CaseStudyPage';
 import { ArrowRight, Phone } from 'lucide-react';
 
@@ -34,21 +36,35 @@ const WhatsAppIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isStrategyCallOpen, setIsStrategyCallOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudy | null>(null);
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | null>(null);
   const [contactPreselectedService, setContactPreselectedService] = useState<string | undefined>(undefined);
 
+  // "Book Your Free Strategy Call" now opens the booking form as a popup
   const handleOpenContact = (preselectedSvc?: string) => {
     setSelectedCaseStudy(null);
     setContactPreselectedService(preselectedSvc);
-    setActiveTab('strategy-call');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsStrategyCallOpen(true);
   };
 
   const handleSelectCaseStudy = (study: CaseStudy) => {
     setSelectedCaseStudy(study);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToCaseStudies = () => {
+    setSelectedCaseStudy(null);
+    window.setTimeout(() => {
+      const section = document.getElementById('work-section');
+      if (!section) return;
+
+      const header = document.querySelector('header.fixed');
+      const headerOffset = header instanceof HTMLElement ? header.offsetHeight : 0;
+      const top = window.scrollY + section.getBoundingClientRect().top - headerOffset - 12;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 0);
   };
 
   const handleTabChange = (tab: ActiveTab) => {
@@ -58,25 +74,15 @@ export default function App() {
 
   const handleExploreWork = () => {
     setSelectedCaseStudy(null);
-    if (activeTab === 'strategy-call') {
-      setActiveTab('home');
-      setTimeout(() => {
-        const element = document.getElementById('work-section');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById('work-section');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+    const element = document.getElementById('work-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
     <div className="min-h-screen bg-[#050816] text-[#F5F5F5] font-sans selection:bg-blue-600/40 selection:text-white relative">
-      
+
       {/* Desktop Ambient Cursor Spotlight */}
       <CursorSpotlight />
 
@@ -91,14 +97,9 @@ export default function App() {
       {selectedCaseStudy ? (
         <CaseStudyPage
           study={selectedCaseStudy}
-          onBack={() => setSelectedCaseStudy(null)}
+          onBack={handleBackToCaseStudies}
           onSelectCaseStudy={handleSelectCaseStudy}
           onOpenContact={(svc) => handleOpenContact(svc)}
-        />
-      ) : activeTab === 'strategy-call' ? (
-        <StrategyCallPage
-          onBack={() => setActiveTab('home')}
-          preselectedService={contactPreselectedService}
         />
       ) : (
         <main className="relative">
@@ -114,43 +115,50 @@ export default function App() {
           {/* 03. Key Performance Results Section */}
           <ResultsSection onOpenContact={() => handleOpenContact('Performance Strategy Call')} />
 
-          {/* 04. Core Services Section */}
+          {/* 04. Ads Manager & Shopify Account Screenshots */}
+          <PerformanceProofSection onOpenContact={() => handleOpenContact('Performance Strategy Call')} />
+
+          {/* 05. Core Services Section */}
           <ServicesSection
             onSelectService={(service) => setSelectedService(service)}
           />
 
-          {/* 05. Why Choose Us / Growth Systems Section */}
-          <WhyWingsSection />
-
-          {/* 06. 4-Step Methodology / Process */}
-          <ProcessSection />
-
-          {/* 07. E-Commerce Growth Engine & Performance Section */}
+          {/* 06. E-Commerce Growth Engine & Performance Section */}
           <EcommerceEngineSection onOpenContact={() => handleOpenContact('E-Commerce Growth Engine')} />
 
-          {/* 08. Interactive ROAS, CPP, Revenue & Ad Budget Calculator */}
+          {/* 07. Interactive ROAS, CPP, Revenue & Ad Budget Calculator */}
           <CalculatorSection onOpenContact={(svc) => handleOpenContact(svc)} />
 
-          {/* 09. Case Studies / Featured Work */}
+          {/* 08. Why Choose Us / Growth Systems Section */}
+          <WhyWingsSection />
+
+          {/* 09. 4-Step Methodology / Process */}
+          <ProcessSection />
+
+          {/* 10. Case Studies / Featured Work */}
           <CaseStudiesSection
             onSelectCaseStudy={handleSelectCaseStudy}
             onOpenContact={() => handleOpenContact('Case Study Strategy Call')}
           />
 
-          {/* 09. Testimonials / Client Feedback */}
+          {/* 11. Testimonials / Client Feedback + Client Screenshots */}
           <TestimonialsSection />
 
-          {/* 10. Company Story & Dailyhunt Credibility */}
+          {/* 12. Company Story & Dailyhunt Credibility */}
           <CompanyStorySection />
-          <DailyhuntSection />
+          {/* 13. Our Team Gallery */}
+          <TeamGallerySection />
 
-          {/* 11. Pricing & Engagement Models */}
+          {/* 14. Articles by Saujash Maulik */}
+          <ArticlesSection />
+
+          {/* 15. Pricing & Engagement Models */}
           <PricingSection onOpenContact={() => handleOpenContact('Engagement Discussion')} />
 
-          {/* 12. FAQ Section */}
+          {/* 16. FAQ Section */}
           <FaqSection onOpenContact={() => handleOpenContact('FAQ Inquiry')} />
 
-          {/* 13. Final High-Converting Call-to-Action */}
+          {/* 17. Final High-Converting Call-to-Action */}
           <FinalCtaSection
             onOpenContact={() => handleOpenContact('Strategy Call Request')}
             onExploreWork={handleExploreWork}
@@ -175,7 +183,7 @@ export default function App() {
         <div className="flex items-center justify-between w-full sm:w-auto gap-1.5 sm:gap-2">
           {/* Direct WhatsApp Message Button */}
           <a
-            href="https://wa.me/919230628052?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
+            href="https://wa.me/919230554211?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 sm:flex-none px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs border border-emerald-400/30 transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30"
@@ -197,6 +205,12 @@ export default function App() {
       </div>
 
       {/* Modals & Drawers */}
+      <StrategyCallModal
+        isOpen={isStrategyCallOpen}
+        onClose={() => setIsStrategyCallOpen(false)}
+        preselectedService={contactPreselectedService}
+      />
+
       <ContactModal
         isOpen={isContactOpen}
         onClose={() => setIsContactOpen(false)}

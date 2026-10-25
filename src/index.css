@@ -161,3 +161,9 @@
 }
 
 
+
+/* Slide progress bar used by the Ads Manager / Shopify screenshot slider */
+@keyframes wingsSlideProgress {
+  from { width: 0%; }
+  to { width: 100%; }
+}

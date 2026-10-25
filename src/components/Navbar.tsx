@@ -15,9 +15,10 @@ interface NavbarProps {
   onOpenContact: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenContact }) => {
+export const Navbar: React.FC<NavbarProps> = ({ setActiveTab, onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeNavItem, setActiveNavItem] = useState('Home');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,20 +33,28 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
     { label: 'Home', tab: 'home', sectionId: '' },
     { label: 'Services', tab: 'services', sectionId: 'services-section' },
     { label: 'Results', tab: 'results', sectionId: 'results-section' },
+    { label: 'Team', tab: 'about', sectionId: 'team-gallery' },
+    { label: 'Articles', tab: 'about', sectionId: 'articles' },
     { label: 'Process', tab: 'work', sectionId: 'process-section' },
     { label: 'Testimonials', tab: 'about', sectionId: 'testimonials-section' },
     { label: 'FAQ', tab: 'careers', sectionId: 'faq-section' },
   ];
 
-  const handleNavClick = (tab: ActiveTab, sectionId?: string) => {
+  const handleNavClick = (tab: ActiveTab, sectionId?: string, label = 'Home') => {
     setActiveTab(tab);
+    setActiveNavItem(label);
     setMobileMenuOpen(false);
 
     if (sectionId) {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      window.requestAnimationFrame(() => {
+        const element = document.getElementById(sectionId);
+        if (!element) return;
+
+        const header = document.querySelector('header.fixed');
+        const headerOffset = header instanceof HTMLElement ? header.offsetHeight : 0;
+        const top = window.scrollY + element.getBoundingClientRect().top - headerOffset - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -67,17 +76,18 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
             className="group text-left cursor-pointer focus:outline-none"
             aria-label="WINGS Marketing Home"
           >
-            <WingsLogo size="md" />
+            <WingsLogo size="md" showText={false} />
           </button>
 
           {/* Desktop Nav Items */}
           <nav className="hidden lg:flex items-center gap-1.5 bg-[#0A1024]/80 backdrop-blur-lg px-4 py-2 rounded-full border border-white/10 shadow-inner">
             {navItems.map((item) => {
-              const isActive = activeTab === item.tab;
+              const isActive = activeNavItem === item.label;
               return (
                 <button
-                  key={item.tab}
-                  onClick={() => handleNavClick(item.tab, item.sectionId)}
+                  key={item.sectionId || item.label}
+                  onClick={() => handleNavClick(item.tab, item.sectionId, item.label)}
+                  aria-current={isActive ? 'location' : undefined}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-[#4F7CFF]/30 text-white border border-[#4F7CFF]/50 shadow-sm shadow-blue-500/20'
@@ -94,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
           <div className="hidden lg:flex items-center gap-2.5 shrink-0">
             {/* Direct WhatsApp Button */}
             <a
-              href="https://wa.me/919230628052?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
+              href="https://wa.me/919230554211?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 rounded-full border border-emerald-500/30 transition-all cursor-pointer shadow-sm"
@@ -125,8 +135,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
             </span>
             {navItems.map((item) => (
               <button
-                key={item.tab}
-                onClick={() => handleNavClick(item.tab, item.sectionId)}
+                key={item.sectionId || item.label}
+                onClick={() => handleNavClick(item.tab, item.sectionId, item.label)}
+                aria-current={activeNavItem === item.label ? 'location' : undefined}
                 className="text-left font-display text-xl sm:text-2xl font-bold text-white hover:text-[#5B8CFF] py-3.5 border-b border-white/5 transition-colors flex items-center justify-between cursor-pointer"
               >
                 <span>{item.label}</span>
@@ -139,7 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
             {/* Quick Action Contact Cards */}
             <div className="flex flex-col gap-2.5">
               <a
-                href="https://wa.me/919230628052?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
+                href="https://wa.me/919230554211?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded-2xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 flex items-center justify-center gap-2 transition-all"
@@ -156,7 +167,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenC
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#5B8CFF]" />
-                <span>+91 92306 28052</span>
+                <span>+91 92305 54211</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[#5B8CFF]" />

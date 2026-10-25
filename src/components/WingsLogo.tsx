@@ -48,7 +48,7 @@ export const WingsLogo: React.FC<WingsLogoProps> = ({
         <img
           src={companyLogo}
           alt="WINGS Marketing Logo"
-          className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300 mix-blend-screen filter drop-shadow-[0_0_12px_rgba(79,124,255,0.6)]"
+          className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300 mix-blend-screen"
         />
       </div>
 

@@ -100,7 +100,7 @@ export const StrategyCallPage: React.FC<StrategyCallPageProps> = ({ onBack, pres
                 {submitError && (
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center justify-between gap-3">
                     <span>{submitError}</span>
-                    <a href="https://wa.me/919230628052" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-white whitespace-nowrap">
+                    <a href="https://wa.me/919230554211" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-white whitespace-nowrap">
                       WhatsApp Us
                     </a>
                   </div>

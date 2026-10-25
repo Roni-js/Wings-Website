@@ -86,7 +86,7 @@ export const EcommerceEngineSection: React.FC<EcommerceEngineSectionProps> = ({ 
             </div>
 
             <div className="h-36 w-full relative flex items-end">
-              <svg className="w-full h-full overflow-visible" viewBox="0 0 500 100">
+              <svg className="w-full h-full overflow-hidden" viewBox="0 0 500 100">
                 <defs>
                   <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#4F7CFF" stopOpacity="0.4" />
@@ -94,18 +94,18 @@ export const EcommerceEngineSection: React.FC<EcommerceEngineSectionProps> = ({ 
                   </linearGradient>
                 </defs>
                 <path
-                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 500 5 L 500 100 L 0 100 Z"
+                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 490 5 L 490 100 L 0 100 Z"
                   fill="url(#blueGradient)"
                 />
                 <path
-                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 500 5"
+                  d="M 0 90 Q 100 80, 180 50 T 350 25 T 490 5"
                   fill="none"
                   stroke="#4F7CFF"
                   strokeWidth="3"
                 />
                 <circle cx="180" cy="50" r="4" fill="#4F7CFF" />
                 <circle cx="350" cy="25" r="4" fill="#8B5CF6" />
-                <circle cx="500" cy="5" r="5" fill="#6EE7B7" className="animate-ping" />
+                <circle cx="490" cy="5" r="5" fill="#6EE7B7" />
               </svg>
             </div>
 

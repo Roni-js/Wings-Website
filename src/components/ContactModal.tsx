@@ -120,7 +120,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
             </div>
 
             <div className="p-4 rounded-xl bg-[#4F7CFF]/10 border border-[#4F7CFF]/30 text-xs text-[#5B8CFF] font-mono inline-block">
-              Direct Desk: +91 92306 28052 • retail@wings-marketing.com
+              Direct Desk: +91 92305 54211 • retail@wings-marketing.com
             </div>
 
             <div>
@@ -157,7 +157,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, pre
             {/* Instant Contact Action Bar */}
             <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10">
               <a
-                href="https://wa.me/919230628052?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
+                href="https://wa.me/919230554211?text=Hi%20WINGS%20Marketing%2C%20I%20want%20to%20scale%20my%20D2C%20brand!"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/30 text-white flex items-center gap-3 transition-all group"

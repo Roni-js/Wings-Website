@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, Quote, Sparkles, CheckCircle2 } from 'lucide-react';
+import { InboxScreenshotsSlider } from './TestimonialScreenshots';
 
 export const TestimonialsSection: React.FC = () => {
   const testimonials = [
@@ -131,7 +132,7 @@ export const TestimonialsSection: React.FC = () => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[#4F7CFF]/10 rounded-full blur-[160px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-10 sm:space-y-12">
-        
+
         {/* Compact Section Header */}
         <div className="text-center space-y-2.5 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#4F7CFF]/10 text-[#5B8CFF] text-[10px] font-bold tracking-widest uppercase border border-[#4F7CFF]/20 shadow-sm">
@@ -149,7 +150,7 @@ export const TestimonialsSection: React.FC = () => {
         </div>
 
         {/* Single Marquee Reviews Container with Fade Mask */}
-        <div 
+        <div
           className="relative w-full overflow-hidden py-2"
           style={{
             maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
@@ -208,6 +209,9 @@ export const TestimonialsSection: React.FC = () => {
           </div>
 
         </div>
+
+        {/* Client Shared Screenshots (vertical slider) */}
+        <InboxScreenshotsSlider />
 
       </div>
     </section>
